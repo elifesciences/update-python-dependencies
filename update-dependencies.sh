@@ -2,7 +2,7 @@
 # updates Pipfile.lock and regenerates the requirements.txt file.
 # if a package and a version are passed in, then just that package (and it's dependencies) will be updated.
 
-set -ex
+set -e
 
 # the envvar is necessary otherwise Pipenv will use it's own .venv directory.
 export VIRTUAL_ENV="venv"

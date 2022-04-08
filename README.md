@@ -8,8 +8,8 @@ A bash script for Python projects using Pipenv that will update *all* dependenci
 * `Pipenv` file
 * `requirements.txt` file
 
-**Note**: Python projects that already have a version of the `update-dependencies.sh` script that also need to support
-updating single dependencies can replace it with this:
+**Note**: Python projects that already have a version of the `update-dependencies.sh` script that must also support
+single dependency updates can replace their script with this:
 
 ```bash
 #!/bin/bash

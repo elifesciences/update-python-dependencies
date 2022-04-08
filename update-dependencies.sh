@@ -4,13 +4,10 @@
 
 set -e
 
-# the envvar is necessary otherwise Pipenv will use it's own .venv directory.
-export VIRTUAL_ENV="venv"
-
 # optional
 package="$1"
 version="$2"
-lock_constraint=${3:-semver} # either 'semver' (~=) or not-semver (==).
+lock_constraint=${3:-semver} # either 'semver' (~=) or 'exact' (==).
 
 if [ ! -e Pipfile ]; then
     echo "a 'Pipfile' is missing"
@@ -36,6 +33,9 @@ python3.6 -m venv venv
 # prefer using wheels to compilation
 source venv/bin/activate
 pip install pip wheel --upgrade
+
+# the envvar is necessary otherwise Pipenv will use it's own .venv directory.
+export VIRTUAL_ENV="venv"
 
 if [ -n "$package" ]; then
     # updates a single package to a specific version.

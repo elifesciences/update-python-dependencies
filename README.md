@@ -34,8 +34,8 @@ The optional `lock-constraint` is either "semver" (default) or "exact".
 
 Using the default `lock-constraint` and the above example, the updated `Pipfile` will have:
     
-    `elifetools = "~=0.15.0"`
+    elifetools = "~=0.15.0"
 
 If `lock-constraint` is "exact", then the updated `Pipfile` will have:
 
-    `elifetools = "==0.15.0"`
+    elifetools = "==0.15.0"

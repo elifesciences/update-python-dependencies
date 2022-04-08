@@ -8,6 +8,14 @@ A bash script for Python projects using Pipenv that will update *all* dependenci
 * `Pipenv` file
 * `requirements.txt` file
 
+**Note**: Python projects that already have a version of the `update-dependencies.sh` script that also need to support
+updating single dependencies can replace it with this:
+
+```bash
+#!/bin/bash
+bash <( curl "https://raw.githubusercontent.com/elifesciences/update-python-dependencies/master/update-dependencies.sh" ) $@
+```
+
 ## usage
 
 update all dependencies:

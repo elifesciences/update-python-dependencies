@@ -33,6 +33,7 @@ python3.6 -m venv venv
 # prefer using wheels to compilation
 source venv/bin/activate
 pip install pip wheel --upgrade
+pip install pipenv==2022.1.8
 
 # the envvar is necessary otherwise Pipenv will use it's own .venv directory.
 export VIRTUAL_ENV="venv"

@@ -38,6 +38,9 @@ pip install pip wheel --upgrade
 # the envvar is necessary otherwise Pipenv will use it's own .venv directory.
 export VIRTUAL_ENV="venv"
 
+# suppress pipenv warnings about using our own virtualenv.
+export PIPENV_VERBOSITY=-1
+
 if [ -n "$package" ]; then
     # updates a single package to a specific version.
 

@@ -2,7 +2,7 @@
 # updates Pipfile.lock and regenerates the requirements.txt file.
 # if a package and a version are passed in, then just that package (and it's dependencies) will be updated.
 
-set -ex
+set -e
 
 # optional
 package="$1"
@@ -41,10 +41,12 @@ export VIRTUAL_ENV="venv"
 # suppress pipenv warnings about using our own virtualenv.
 export PIPENV_VERBOSITY=-1
 
+# pipenv supposedly doesn't use requirements.txt if a Pipfile is present, but it's presence 
+# can lead to it hanging attempting to update the lock file.
+rm requirements.txt
+
 if [ -n "$package" ]; then
     # updates a single package to a specific version.
-
-    pip install -r requirements.txt
 
     # make Pipenv install exactly what we want (==).
     if [[ "$OSTYPE" == linux-gnu* ]]; then

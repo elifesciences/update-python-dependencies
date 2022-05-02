@@ -2,7 +2,7 @@
 # updates Pipfile.lock and regenerates the requirements.txt file.
 # if a package and a version are passed in, then just that package (and it's dependencies) will be updated.
 
-set -e
+set -ex
 
 # optional
 package="$1"
@@ -65,7 +65,6 @@ if [ -n "$package" ]; then
     fi
 else
     # updates the Pipfile.lock file and then installs the newly updated dependencies.
-    # the envvar is necessary otherwise Pipenv will use it's own .venv directory.
     pipenv update --dev
 fi
 

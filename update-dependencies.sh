@@ -56,7 +56,7 @@ if [ -n "$package" ]; then
         sed -i '' -E "s/$package = \".+\"/$package = \"==$version\"/" Pipfile
     fi
 
-    pipenv install --keep-outdated "$package==$version"
+    pipenv install --verbose --keep-outdated "$package==$version"
 
     # relax the constraint again (~=).
     if [[ "$lock_constraint" == semver ]]; then

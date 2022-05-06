@@ -43,7 +43,8 @@ export PIPENV_VERBOSITY=-1
 
 # pipenv supposedly doesn't use requirements.txt if a Pipfile is present, but it's presence 
 # can lead to it hanging attempting to update the lock file.
-rm requirements.txt
+pip install -r requirements.txt
+#rm requirements.txt
 
 if [ -n "$package" ]; then
     # updates a single package to a specific version.

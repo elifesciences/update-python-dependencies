@@ -53,7 +53,7 @@ function update {
             sed -i '' -E "s/$package = \".+\"/$package = \"==$version\"/" Pipfile
         fi
 
-        timeout --verbose 5m \
+        timeout 5m \
             pipenv install --keep-outdated "$package==$version"
         retval=$?
 

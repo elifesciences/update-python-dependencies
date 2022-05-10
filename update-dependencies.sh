@@ -53,13 +53,17 @@ function update {
             sed -i '' -E "s/$package = \".+\"/$package = \"==$version\"/" Pipfile
         fi
 
-        timeout 5m \
-            pipenv install --keep-outdated "$package==$version"
-        retval=$?
+        # lsh@2022-05-10: disabled. pipenv can't be trusted to not take *forever* to finish.
 
-        if [ "$retval" != "0" ]; then
-            return 1
-        fi
+        #timeout 10m \
+        #    pipenv install --keep-outdated "$package==$version"
+        #retval=$?
+        
+        #if [ "$retval" != "0" ]; then
+        #    return 1
+        #fi
+
+        pip install "$package==$version"
 
         # relax the constraint again (~=).
         if [[ "$lock_constraint" == semver ]]; then
@@ -77,8 +81,11 @@ function update {
     return 0
 }
 
+# lsh@2022-05-10: disabled, switched back to pip 
 # try once and if it fails/timesout after 5 minutes, try once more
-update || update
+#update || update
+
+update
 
 datestamp=$(date +"%Y-%m-%d") # long form to support linux + bsd
 echo "# file generated $datestamp - see update-dependencies.sh" > requirements.txt

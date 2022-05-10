@@ -34,6 +34,7 @@ python3.6 -m venv venv
 source venv/bin/activate
 pip install pip wheel --upgrade
 #pip install pipenv==2022.1.8 # don't do this, it will add pipenv and it's dependencies to the requirements.txt file
+pip install -r requirements.txt
 
 # the envvar is necessary otherwise Pipenv will use it's own .venv directory.
 export VIRTUAL_ENV="venv"
@@ -41,35 +42,43 @@ export VIRTUAL_ENV="venv"
 # suppress pipenv warnings about using our own virtualenv.
 export PIPENV_VERBOSITY=-1
 
-# pipenv supposedly doesn't use requirements.txt if a Pipfile is present, but it's presence 
-# can lead to it hanging attempting to update the lock file.
-pip install -r requirements.txt
-#rm requirements.txt
+function update {
+    if [ -n "$package" ]; then
+        # updates a single package to a specific version.
 
-if [ -n "$package" ]; then
-    # updates a single package to a specific version.
-
-    # make Pipenv install exactly what we want (==).
-    if [[ "$OSTYPE" == linux-gnu* ]]; then
-        sed --in-place --regexp-extended "s/$package = \".+\"/$package = \"==$version\"/" Pipfile
-    else
-        sed -i '' -E "s/$package = \".+\"/$package = \"==$version\"/" Pipfile
-    fi
-
-    pipenv install --keep-outdated "$package==$version"
-
-    # relax the constraint again (~=).
-    if [[ "$lock_constraint" == semver ]]; then
+        # make Pipenv install exactly what we want (==).
         if [[ "$OSTYPE" == linux-gnu* ]]; then
-            sed --in-place --regexp-extended "s/$package = \".+\"/$package = \"~=$version\"/" Pipfile
+            sed --in-place --regexp-extended "s/$package = \".+\"/$package = \"==$version\"/" Pipfile
         else
-            sed -i '' -E "s/$package = \".+\"/$package = \"~=$version\"/" Pipfile
+            sed -i '' -E "s/$package = \".+\"/$package = \"==$version\"/" Pipfile
         fi
+
+        timeout --verbose 5m \
+            pipenv install --keep-outdated "$package==$version"
+        retval=$?
+
+        if [ "$retval" != "0" ]; then
+            return 1
+        fi
+
+        # relax the constraint again (~=).
+        if [[ "$lock_constraint" == semver ]]; then
+            if [[ "$OSTYPE" == linux-gnu* ]]; then
+                sed --in-place --regexp-extended "s/$package = \".+\"/$package = \"~=$version\"/" Pipfile
+            else
+                sed -i '' -E "s/$package = \".+\"/$package = \"~=$version\"/" Pipfile
+            fi
+        fi
+    else
+        # updates the Pipfile.lock file 
+        pipenv update --dev
     fi
-else
-    # updates the Pipfile.lock file and then installs the newly updated dependencies.
-    pipenv update --dev
-fi
+
+    return 0
+}
+
+# try once and if it fails/timesout after 5 minutes, try once more
+update || update
 
 datestamp=$(date +"%Y-%m-%d") # long form to support linux + bsd
 echo "# file generated $datestamp - see update-dependencies.sh" > requirements.txt
